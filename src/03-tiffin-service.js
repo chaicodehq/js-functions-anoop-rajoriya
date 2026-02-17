@@ -41,12 +41,68 @@
  */
 export function createTiffinPlan({ name, mealType = "veg", days = 30 } = {}) {
   // Your code here
+  //  - Destructured parameter with defaults!
+  //  - Meal prices per day: veg=80, nonveg=120, jain=90
+  //  - Agar mealType unknown hai, return null
+  //  - Agar name missing/empty, return null
+  //  - Return: { name, mealType, days, dailyRate, totalCost }
+
+  const mealTypes = {
+    veg: 80,
+    nonveg: 120,
+    jain: 90
+  }
+
+  if (typeof name !== "string" || name.length === 0) return null
+  if (!mealTypes.hasOwnProperty(mealType)) return null
+
+  const dailyRate = mealTypes[mealType]
+
+  return { name, mealType, days, dailyRate, totalCost: dailyRate * days }
 }
 
 export function combinePlans(...plans) {
   // Your code here
+  //  - Rest parameter! Takes any number of plan objects
+  //  - Each plan: { name, mealType, days, dailyRate, totalCost }
+  //  - Return: { totalCustomers, totalRevenue, mealBreakdown }
+  //  - mealBreakdown: { veg: count, nonveg: count, ... }
+  //  - Agar koi plans nahi diye, return null
+
+  if (plans.length === 0) return null
+
+  const totalCustomers = plans.length
+  const totalRevenue = plans.reduce((acc, curr) => acc + curr.totalCost, 0)
+  let mealBreakdown = {}
+
+  for (const plan of plans) {
+    const mealType = plan.mealType
+    if (!mealBreakdown.hasOwnProperty(mealType)) {
+      mealBreakdown[mealType] = 0
+    }
+
+    mealBreakdown[mealType] += 1
+  }
+
+  return { totalCustomers, totalRevenue, mealBreakdown }
 }
 
 export function applyAddons(plan, ...addons) {
   // Your code here
+  // - plan: { name, mealType, days, dailyRate, totalCost }
+  // - Each addon: { name: "raita", price: 15 }
+  // - Add each addon price to dailyRate
+  // - Recalculate totalCost = new dailyRate * days
+  // - Return NEW plan object (don't modify original)
+  // - addonNames: array of addon names added
+  // - Agar plan null hai, return null
+
+  if (plan === null) return null
+
+  let { dailyRate, days } = plan
+
+  const newDailyRate = addons.reduce((acc, curr) => acc + curr.price, dailyRate)
+  const addonNames = addons.map((addon) => addon.name)
+
+  return { ...plan, dailyRate: newDailyRate, totalCost: newDailyRate * days, addonNames }
 }

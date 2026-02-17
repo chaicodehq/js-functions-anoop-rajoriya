@@ -53,29 +53,86 @@
  *   // => { name: "Haldi", form: "powder", packed: true, label: "Haldi Masala" }
  */
 export function pipe(...fns) {
-  // Your code here
+  //  *   1. pipe(...fns)
+  //  *      - Takes any number of functions
+  //  *      - Returns a NEW function that applies them LEFT to RIGHT
+  //  *      - pipe(f, g, h)(x) means h(g(f(x)))
+  //  *      - Agar no functions given, return identity function (x => x)
+
+  if (fns.length === 0) return x => x
+
+  return (initial) => {
+    return fns.reduce((currVal, currFn) => currFn(currVal), initial)
+  }
 }
 
 export function compose(...fns) {
-  // Your code here
+  //  *   2. compose(...fns)
+  //  *      - Takes any number of functions
+  //  *      - Returns a NEW function that applies them RIGHT to LEFT
+  //  *      - compose(f, g, h)(x) means f(g(h(x)))
+  //  *      - Agar no functions given, return identity function (x => x)
+
+  if (fns.length === 0) return x => x
+
+  return (initial) => {
+    return fns.reduceRight((currVal, currFn) => currFn(currVal), initial)
+  }
 }
 
 export function grind(spice) {
-  // Your code here
+  //  *   3. grind(spice)
+  //  *      - Returns: { ...spice, form: "powder" }
+  return { ...spice, form: "powder" }
 }
 
 export function roast(spice) {
-  // Your code here
+  //  *   4. roast(spice)
+  //  *      - Returns: { ...spice, roasted: true, aroma: "strong" }
+
+  return { ...spice, roasted: true, aroma: "strong" }
 }
 
 export function mix(spice) {
-  // Your code here
+  //  *   5. mix(spice)
+  //  *      - Returns: { ...spice, mixed: true }
+  return { ...spice, mixed: true }
 }
 
 export function pack(spice) {
-  // Your code here
+  //  *   6. pack(spice)
+  //  *      - Returns: { ...spice, packed: true, label: `${spice.name} Masala` }
+
+  return { ...spice, packed: true, label: `${spice.name} Masala` }
 }
 
 export function createRecipe(steps) {
-  // Your code here
+  //  *   7. createRecipe(steps)
+  //  *      - steps: array of step name strings, e.g., ["grind", "roast", "pack"]
+  //  *      - Maps step names to functions: "grind"=>grind, "roast"=>roast,
+  //  *        "mix"=>mix, "pack"=>pack
+  //  *      - Returns a piped function that applies steps in order
+  //  *      - Unknown step names are skipped
+  //  *      - Agar steps empty or not array, return identity function
+
+  if (!Array.isArray(steps) || steps.length === 0) return x => x
+
+  const map = {
+    grind,
+    roast,
+    mix,
+    pack
+  }
+
+  return (val) => {
+    let currVal = val
+
+    steps.forEach(step => {
+      if (map.hasOwnProperty(step)) {
+        currVal = map[step](currVal)
+      }
+    })
+
+    return currVal
+  }
 }

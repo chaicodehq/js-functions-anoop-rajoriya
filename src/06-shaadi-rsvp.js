@@ -46,17 +46,70 @@
  *   // => "Amit is coming!"
  */
 export function processGuests(guests, filterFn) {
-  // Your code here
+  // 1. processGuests(guests, filterFn)
+  //    - guests: array of guest objects
+  //    - filterFn: callback function that takes a guest, returns true/false
+  //    - Returns: array of guests for which filterFn returned true
+  //    - Agar guests not array or filterFn not function, return []
+
+  if (!Array.isArray(guests) || typeof filterFn !== "function") return []
+
+  const g = guests.filter(guest => filterFn(guest))
+
+  return g
 }
 
 export function notifyGuests(guests, notifyCallback) {
-  // Your code here
+  // 2. notifyGuests(guests, notifyCallback)
+  //    - Calls notifyCallback(guest) for EACH guest in array
+  //    - Collects return values from each callback call
+  //    - Returns: array of callback results
+  //    - Agar guests not array or notifyCallback not function, return []
+
+  if (!Array.isArray(guests) || typeof notifyCallback !== "function") return []
+
+  const callbackResults = guests.map(guest => notifyCallback(guest))
+
+  return callbackResults
 }
 
 export function handleRSVP(guest, onAccept, onDecline) {
-  // Your code here
+  // 3. handleRSVP(guest, onAccept, onDecline)
+  //    - If guest.rsvp === "yes", call onAccept(guest) and return its result
+  //    - If guest.rsvp === "no", call onDecline(guest) and return its result
+  //    - If guest.rsvp is anything else, return null
+  //    - Agar guest null/undefined or callbacks not functions, return null
+
+  const isValid = typeof guest === "object" && guest !== null && typeof onAccept === "function" && typeof onDecline === "function"
+
+  if (!isValid) return null
+
+  if (guest.rsvp === "yes") {
+    return onAccept(guest)
+  }
+  else if (guest.rsvp === "no") {
+    return onDecline(guest)
+  }
+  else {
+    return null
+  }
 }
 
 export function transformGuestList(guests, ...transformFns) {
-  // Your code here
+  // 4. transformGuestList(guests, ...transformFns)
+  //    - Takes guest array and any number of transform functions
+  //    - Each transformFn takes an array and returns a new array
+  //    - Apply transforms LEFT to RIGHT (first fn first)
+  //    - Return the final transformed array
+  //    - Agar guests not array, return []
+
+  if (!Array.isArray(guests)) return []
+
+  let transformedGuests = guests
+
+  transformFns.forEach(fn => {
+    transformedGuests = fn(transformedGuests)
+  })
+
+  return transformedGuests
 }

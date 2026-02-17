@@ -33,4 +33,30 @@
  */
 export function calculateDosaOrder(type, quantity = 1, isSpicy = false) {
   // Your code here
+
+  const dosaPrices = {
+    plain: 40,
+    masala: 60,
+    onion: 50,
+    butter: 70,
+    paper: 90,
+    cheese: 80
+  }
+
+  if (typeof type !== "string" || !dosaPrices.hasOwnProperty(type) || quantity <= 0) return null
+
+  let order = {
+    type,
+    quantity,
+    pricePerDosa: 0,
+    total: 0
+  }
+
+  order.pricePerDosa = dosaPrices[type] + (isSpicy ? 10 : 0)
+  order.total = order.pricePerDosa * quantity
+
+  return order
 }
+
+
+console.log(calculateDosaOrder("masala", 2, true))
